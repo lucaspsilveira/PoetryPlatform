@@ -1,0 +1,167 @@
+.landing {
+  min-height: 100vh;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem 4rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 70vh;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-title {
+  font-family: 'Georgia', serif;
+  font-size: 4rem;
+  line-height: 1.1;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title .highlight {
+  color: #6c5ce7;
+  font-style: italic;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: #2c3e50;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.cta-button:hover {
+  background: #1a252f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hero-decoration {
+  max-width: 400px;
+}
+
+.floating-quote {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  transform: rotate(2deg);
+}
+
+.floating-quote p {
+  font-size: 1.3rem;
+  color: #444;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.floating-quote span {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  padding: 5rem 4rem;
+  background: white;
+}
+
+.feature {
+  text-align: center;
+  padding: 2rem;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature h3 {
+  font-family: 'Georgia', serif;
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+}
+
+.feature p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.inspiration {
+  background: #2c3e50;
+  color: white;
+  padding: 5rem 4rem;
+  text-align: center;
+}
+
+.inspiration h2 {
+  font-family: 'Georgia', serif;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: normal;
+}
+
+.quote-carousel blockquote {
+  font-family: 'Georgia', serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.quote-carousel cite {
+  display: block;
+  margin-top: 1rem;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  color: #888;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-decoration {
+    margin-top: 3rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    padding: 3rem 2rem;
+  }
+}

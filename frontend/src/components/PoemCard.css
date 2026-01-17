@@ -1,0 +1,191 @@
+.poem-card {
+  background: linear-gradient(145deg, #fffef9 0%, #faf8f3 100%);
+  border-radius: 2px;
+  padding: 2rem;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.05),
+    0 2px 4px rgba(0,0,0,0.05),
+    0 4px 8px rgba(0,0,0,0.05),
+    0 8px 16px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  transform: rotate(var(--rotation, 0deg));
+}
+
+.poem-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      transparent,
+      transparent 27px,
+      #e8e4df 28px
+    );
+  opacity: 0.3;
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.poem-card::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 20px;
+  background: linear-gradient(135deg, #ffd699 0%, #ffb347 100%);
+  opacity: 0.9;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.poem-card:nth-child(3n+1) {
+  --rotation: -1deg;
+}
+
+.poem-card:nth-child(3n+2) {
+  --rotation: 1.5deg;
+}
+
+.poem-card:nth-child(3n) {
+  --rotation: -0.5deg;
+}
+
+.poem-card:hover {
+  transform: rotate(0deg) translateY(-8px) scale(1.02);
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.1),
+    0 8px 16px rgba(0,0,0,0.1),
+    0 16px 32px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.poem-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.poem-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.35rem;
+  color: #2c3e50;
+  margin: 0;
+  border-bottom: 2px solid #e8c9a0;
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.draft-badge {
+  background: #ffeaa7;
+  color: #856404;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.poem-content {
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: #3a3a3a;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  min-height: 80px;
+}
+
+.poem-content p {
+  margin: 0 0 0.5em 0;
+}
+
+.poem-content p:last-child {
+  margin-bottom: 0;
+}
+
+.poem-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 1rem;
+  border-top: 1px dashed #d4c9b8;
+  position: relative;
+  z-index: 1;
+}
+
+.poem-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.poem-author {
+  font-family: 'Brush Script MT', 'Dancing Script', cursive;
+  font-size: 1.1rem;
+  color: #5a4a3a;
+}
+
+.poem-date {
+  font-size: 0.75rem;
+  color: #999;
+  font-style: italic;
+}
+
+.poem-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.action-btn.edit {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.action-btn.edit:hover {
+  background: #bbdefb;
+  transform: scale(1.05);
+}
+
+.action-btn.delete {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.action-btn.delete:hover {
+  background: #ffcdd2;
+  transform: scale(1.05);
+}
+
+/* Paper variations for visual interest */
+.poem-card.paper-cream {
+  background: linear-gradient(145deg, #fffef5 0%, #f7f3e9 100%);
+}
+
+.poem-card.paper-aged {
+  background: linear-gradient(145deg, #f9f6f0 0%, #efe9dd 100%);
+}
+
+.poem-card.paper-white {
+  background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
+}

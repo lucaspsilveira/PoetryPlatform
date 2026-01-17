@@ -1,0 +1,112 @@
+.feed-page {
+  min-height: calc(100vh - 70px);
+  background:
+    linear-gradient(90deg, #e8e4df 1px, transparent 1px),
+    linear-gradient(#e8e4df 1px, transparent 1px),
+    linear-gradient(135deg, #f5f3f0 0%, #e8e4df 100%);
+  background-size: 50px 50px, 50px 50px, 100% 100%;
+  padding: 3rem 2rem;
+}
+
+.feed-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.feed-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.feed-header h1 {
+  font-family: 'Georgia', serif;
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.feed-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.poems-mural {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: #888;
+  font-size: 1.1rem;
+  grid-column: 1 / -1;
+}
+
+.feed-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.empty-feed {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  color: #888;
+  font-size: 1.1rem;
+  grid-column: 1 / -1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.page-btn {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+  transform: translateY(-1px);
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .poems-mural {
+    grid-template-columns: 1fr;
+  }
+}
