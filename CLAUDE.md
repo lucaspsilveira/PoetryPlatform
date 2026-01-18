@@ -39,6 +39,21 @@ npm run build
 npm run lint
 ```
 
+### Backend Tests (from `backend.Tests/` directory)
+```bash
+# Run all tests
+dotnet test
+
+# Run tests with verbose output
+dotnet test --verbosity normal
+
+# Run specific test class
+dotnet test --filter "FullyQualifiedName~PoemServiceLikeTests"
+
+# Run tests with coverage (if coverlet installed)
+dotnet test --collect:"XPlat Code Coverage"
+```
+
 ## Architecture
 
 ### Backend Structure
@@ -54,6 +69,21 @@ The backend uses:
 - Entity Framework Core with PostgreSQL
 - Swagger/OpenAPI documentation (available at `/swagger` in development)
 - Auto-migration on startup in development mode
+
+### Backend Tests Structure
+- **Services/**: Unit tests for service layer (PoemServiceLikeTests)
+- **Controllers/**: Unit tests for API controllers (PoemsControllerLikeTests)
+
+The test project uses:
+- xUnit as the test framework
+- Moq for mocking dependencies
+- Microsoft.EntityFrameworkCore.InMemory for database testing without PostgreSQL
+- Each test class creates an isolated in-memory database using `Guid.NewGuid()` for the database name
+
+Testing patterns:
+- Service tests use real `ApplicationDbContext` with InMemory provider
+- Controller tests mock `IPoemService` and set up `ClaimsPrincipal` for authentication
+- Use `IDisposable` to clean up database after each test class
 
 ### Frontend Structure
 - **pages/**: Route components (Landing, Login, Register, Write, Feed, MyPoems)
@@ -76,6 +106,8 @@ Key frontend features:
 - `POST /api/poems` - Create poem (auth required)
 - `PUT /api/poems/{id}` - Update poem (auth required, owner only)
 - `DELETE /api/poems/{id}` - Delete poem (auth required, owner only)
+- `POST /api/poems/{id}/like` - Like a poem (auth required)
+- `DELETE /api/poems/{id}/like` - Unlike a poem (auth required)
 
 API documentation available at `http://localhost:5000/swagger` when running in development.
 
@@ -110,6 +142,15 @@ Configure in `backend/appsettings.json` under `ConnectionStrings:DefaultConnecti
 4. Access Swagger UI: http://localhost:5000/swagger
 
 The backend auto-applies migrations on startup in development mode.
+
+## Testing
+
+Run backend tests from `backend.Tests/` directory:
+```bash
+dotnet test
+```
+
+**Important:** Stop the backend API before running tests to avoid file locking issues. The test project references the main backend project, and running tests while the API is active can cause build failures due to locked `.exe` files.
 
 ## Content Storage
 

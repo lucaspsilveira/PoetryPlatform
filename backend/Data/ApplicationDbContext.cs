@@ -12,6 +12,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Poem> Poems => Set<Poem>();
+    public DbSet<Like> Likes => Set<Like>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -28,6 +29,20 @@ public class ApplicationDbContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(p => p.CreatedAt);
             entity.HasIndex(p => p.UserId);
+        });
+
+        builder.Entity<Like>(entity =>
+        {
+            entity.HasKey(l => l.Id);
+            entity.HasOne(l => l.User)
+                  .WithMany(u => u.Likes)
+                  .HasForeignKey(l => l.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.Poem)
+                  .WithMany(p => p.Likes)
+                  .HasForeignKey(l => l.PoemId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(l => new { l.UserId, l.PoemId }).IsUnique();
         });
 
         builder.Entity<User>(entity =>

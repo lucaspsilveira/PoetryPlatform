@@ -7,4 +7,5 @@ public class User : IdentityUser
     public string DisplayName { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<Poem> Poems { get; set; } = new List<Poem>();
+    public ICollection<Like> Likes { get; set; } = new List<Like>();
 }

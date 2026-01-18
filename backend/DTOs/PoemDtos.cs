@@ -21,7 +21,9 @@ public record PoemResponse(
     DateTime CreatedAt,
     DateTime? UpdatedAt,
     bool IsPublished,
-    AuthorDto Author
+    AuthorDto Author,
+    int LikeCount,
+    bool IsLikedByCurrentUser
 );
 
 public record AuthorDto(

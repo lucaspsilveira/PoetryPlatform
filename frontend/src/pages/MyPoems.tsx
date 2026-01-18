@@ -80,6 +80,10 @@ export function MyPoems() {
     }
   };
 
+  const handleLikeChange = (updatedPoem: Poem) => {
+    setPoems(poems.map(p => p.id === updatedPoem.id ? updatedPoem : p));
+  };
+
   const totalPages = Math.ceil(totalCount / pageSize);
 
   if (loading && poems.length === 0) {
@@ -162,6 +166,8 @@ export function MyPoems() {
                   showActions
                   onEdit={handleEdit}
                   onDelete={handleDelete}
+                  isAuthenticated={true}
+                  onLikeChange={handleLikeChange}
                 />
               ))}
             </div>

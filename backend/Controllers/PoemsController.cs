@@ -7,7 +7,7 @@ using PoetryPlatform.Api.Services;
 namespace PoetryPlatform.Api.Controllers;
 
 /// <summary>
-/// Manages poems - create, read, update, and delete operations.
+/// Manages poems - create, read, update, delete, and like operations.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -26,7 +26,7 @@ public class PoemsController : ControllerBase
     /// </summary>
     /// <param name="page">Page number (default: 1).</param>
     /// <param name="pageSize">Number of items per page (default: 10, max: 50).</param>
-    /// <returns>Paginated list of published poems.</returns>
+    /// <returns>Paginated list of published poems with like counts.</returns>
     /// <response code="200">Returns the paginated list of poems.</response>
     [HttpGet("feed")]
     [ProducesResponseType(typeof(PoemListResponse), StatusCodes.Status200OK)]
@@ -37,7 +37,8 @@ public class PoemsController : ControllerBase
         if (page < 1) page = 1;
         if (pageSize < 1 || pageSize > 50) pageSize = 10;
 
-        var result = await _poemService.GetFeedAsync(page, pageSize);
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var result = await _poemService.GetFeedAsync(page, pageSize, currentUserId);
         return Ok(result);
     }
 
@@ -45,7 +46,7 @@ public class PoemsController : ControllerBase
     /// Get a specific poem by ID.
     /// </summary>
     /// <param name="id">The poem ID.</param>
-    /// <returns>The poem details.</returns>
+    /// <returns>The poem details with like count.</returns>
     /// <response code="200">Returns the poem.</response>
     /// <response code="404">If the poem is not found.</response>
     [HttpGet("{id}")]
@@ -53,7 +54,8 @@ public class PoemsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PoemResponse>> GetById(int id)
     {
-        var poem = await _poemService.GetByIdAsync(id);
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var poem = await _poemService.GetByIdAsync(id, currentUserId);
         if (poem == null) return NotFound();
         return Ok(poem);
     }
@@ -151,5 +153,51 @@ public class PoemsController : ControllerBase
         var result = await _poemService.DeleteAsync(id, userId);
         if (!result) return NotFound();
         return NoContent();
+    }
+
+    /// <summary>
+    /// Like a poem.
+    /// </summary>
+    /// <param name="id">The poem ID to like.</param>
+    /// <returns>The poem with updated like count.</returns>
+    /// <response code="200">Returns the poem with updated like status.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="404">If the poem is not found.</response>
+    [Authorize]
+    [HttpPost("{id}/like")]
+    [ProducesResponseType(typeof(PoemResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PoemResponse>> Like(int id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var poem = await _poemService.LikeAsync(id, userId);
+        if (poem == null) return NotFound();
+        return Ok(poem);
+    }
+
+    /// <summary>
+    /// Unlike a poem.
+    /// </summary>
+    /// <param name="id">The poem ID to unlike.</param>
+    /// <returns>The poem with updated like count.</returns>
+    /// <response code="200">Returns the poem with updated like status.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="404">If the poem is not found.</response>
+    [Authorize]
+    [HttpDelete("{id}/like")]
+    [ProducesResponseType(typeof(PoemResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PoemResponse>> Unlike(int id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var poem = await _poemService.UnlikeAsync(id, userId);
+        if (poem == null) return NotFound();
+        return Ok(poem);
     }
 }

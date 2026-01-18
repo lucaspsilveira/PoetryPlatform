@@ -8,11 +8,13 @@ namespace PoetryPlatform.Api.Services;
 public interface IPoemService
 {
     Task<PoemResponse> CreateAsync(string userId, CreatePoemRequest request);
-    Task<PoemResponse?> GetByIdAsync(int id);
-    Task<PoemListResponse> GetFeedAsync(int page, int pageSize);
+    Task<PoemResponse?> GetByIdAsync(int id, string? currentUserId = null);
+    Task<PoemListResponse> GetFeedAsync(int page, int pageSize, string? currentUserId = null);
     Task<PoemListResponse> GetUserPoemsAsync(string userId, int page, int pageSize);
     Task<PoemResponse?> UpdateAsync(int id, string userId, UpdatePoemRequest request);
     Task<bool> DeleteAsync(int id, string userId);
+    Task<PoemResponse?> LikeAsync(int poemId, string userId);
+    Task<PoemResponse?> UnlikeAsync(int poemId, string userId);
 }
 
 public class PoemService : IPoemService
@@ -39,22 +41,25 @@ public class PoemService : IPoemService
         await _context.SaveChangesAsync();
 
         await _context.Entry(poem).Reference(p => p.User).LoadAsync();
-        return MapToResponse(poem);
+        await _context.Entry(poem).Collection(p => p.Likes).LoadAsync();
+        return MapToResponse(poem, userId);
     }
 
-    public async Task<PoemResponse?> GetByIdAsync(int id)
+    public async Task<PoemResponse?> GetByIdAsync(int id, string? currentUserId = null)
     {
         var poem = await _context.Poems
             .Include(p => p.User)
+            .Include(p => p.Likes)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-        return poem == null ? null : MapToResponse(poem);
+        return poem == null ? null : MapToResponse(poem, currentUserId);
     }
 
-    public async Task<PoemListResponse> GetFeedAsync(int page, int pageSize)
+    public async Task<PoemListResponse> GetFeedAsync(int page, int pageSize, string? currentUserId = null)
     {
         var query = _context.Poems
             .Include(p => p.User)
+            .Include(p => p.Likes)
             .Where(p => p.IsPublished)
             .OrderByDescending(p => p.CreatedAt);
 
@@ -65,7 +70,7 @@ public class PoemService : IPoemService
             .ToListAsync();
 
         return new PoemListResponse(
-            poems.Select(MapToResponse),
+            poems.Select(p => MapToResponse(p, currentUserId)),
             totalCount,
             page,
             pageSize
@@ -76,6 +81,7 @@ public class PoemService : IPoemService
     {
         var query = _context.Poems
             .Include(p => p.User)
+            .Include(p => p.Likes)
             .Where(p => p.UserId == userId)
             .OrderByDescending(p => p.CreatedAt);
 
@@ -86,7 +92,7 @@ public class PoemService : IPoemService
             .ToListAsync();
 
         return new PoemListResponse(
-            poems.Select(MapToResponse),
+            poems.Select(p => MapToResponse(p, userId)),
             totalCount,
             page,
             pageSize
@@ -97,6 +103,7 @@ public class PoemService : IPoemService
     {
         var poem = await _context.Poems
             .Include(p => p.User)
+            .Include(p => p.Likes)
             .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
 
         if (poem == null) return null;
@@ -107,7 +114,7 @@ public class PoemService : IPoemService
         poem.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        return MapToResponse(poem);
+        return MapToResponse(poem, userId);
     }
 
     public async Task<bool> DeleteAsync(int id, string userId)
@@ -122,13 +129,59 @@ public class PoemService : IPoemService
         return true;
     }
 
-    private static PoemResponse MapToResponse(Poem poem) => new(
+    public async Task<PoemResponse?> LikeAsync(int poemId, string userId)
+    {
+        var poem = await _context.Poems
+            .Include(p => p.User)
+            .Include(p => p.Likes)
+            .FirstOrDefaultAsync(p => p.Id == poemId);
+
+        if (poem == null) return null;
+
+        var existingLike = poem.Likes.FirstOrDefault(l => l.UserId == userId);
+        if (existingLike == null)
+        {
+            var like = new Like
+            {
+                UserId = userId,
+                PoemId = poemId,
+                CreatedAt = DateTime.UtcNow
+            };
+            poem.Likes.Add(like);
+            await _context.SaveChangesAsync();
+        }
+
+        return MapToResponse(poem, userId);
+    }
+
+    public async Task<PoemResponse?> UnlikeAsync(int poemId, string userId)
+    {
+        var poem = await _context.Poems
+            .Include(p => p.User)
+            .Include(p => p.Likes)
+            .FirstOrDefaultAsync(p => p.Id == poemId);
+
+        if (poem == null) return null;
+
+        var existingLike = poem.Likes.FirstOrDefault(l => l.UserId == userId);
+        if (existingLike != null)
+        {
+            poem.Likes.Remove(existingLike);
+            await _context.SaveChangesAsync();
+        }
+
+        return MapToResponse(poem, userId);
+    }
+
+    private static PoemResponse MapToResponse(Poem poem, string? currentUserId) => new(
         poem.Id,
         poem.Title,
         poem.Content,
         poem.CreatedAt,
         poem.UpdatedAt,
         poem.IsPublished,
-        new AuthorDto(poem.User.Id, poem.User.DisplayName)
+        new AuthorDto(poem.User.Id, poem.User.DisplayName),
+        poem.Likes.Count,
+        currentUserId != null && poem.Likes.Any(l => l.UserId == currentUserId)
     );
 }
