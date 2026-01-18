@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AuthResponse, CreatePoemRequest, Poem, PoemListResponse, UpdatePoemRequest } from '../types';
+import type { AuthResponse, CreatePoemRequest, Poem, PoemListResponse, UpdatePoemRequest, UserProfile } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -90,6 +90,20 @@ export const poemService = {
 
   async unlike(id: number): Promise<Poem> {
     const response = await api.delete<Poem>(`/poems/${id}/like`);
+    return response.data;
+  },
+};
+
+export const userService = {
+  async getProfile(userId: string): Promise<UserProfile> {
+    const response = await api.get<UserProfile>(`/users/${userId}`);
+    return response.data;
+  },
+
+  async getUserPoems(userId: string, page = 1, pageSize = 10): Promise<PoemListResponse> {
+    const response = await api.get<PoemListResponse>(`/users/${userId}/poems`, {
+      params: { page, pageSize },
+    });
     return response.data;
   },
 };
