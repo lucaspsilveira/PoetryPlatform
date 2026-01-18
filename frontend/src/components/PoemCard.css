@@ -142,6 +142,17 @@
   color: #5a4a3a;
 }
 
+.poem-author-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s;
+}
+
+.poem-author-link:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
 .poem-date {
   font-size: 0.75rem;
   color: #999;

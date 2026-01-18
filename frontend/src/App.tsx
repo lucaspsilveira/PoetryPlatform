@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { Write } from './pages/Write';
 import { Feed } from './pages/Feed';
 import { MyPoems } from './pages/MyPoems';
+import { UserProfile } from './pages/UserProfile';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/feed" element={<Feed />} />
+              <Route path="/users/:userId" element={<UserProfile />} />
               <Route
                 path="/write"
                 element={

@@ -86,7 +86,7 @@ Testing patterns:
 - Use `IDisposable` to clean up database after each test class
 
 ### Frontend Structure
-- **pages/**: Route components (Landing, Login, Register, Write, Feed, MyPoems)
+- **pages/**: Route components (Landing, Login, Register, Write, Feed, MyPoems, UserProfile)
 - **components/**: Reusable UI (Navbar, PoemCard, ProtectedRoute, RichTextEditor)
 - **context/**: React context (AuthContext for auth state)
 - **services/**: API client (axios instance with interceptors)
@@ -108,6 +108,8 @@ Key frontend features:
 - `DELETE /api/poems/{id}` - Delete poem (auth required, owner only)
 - `POST /api/poems/{id}/like` - Like a poem (auth required)
 - `DELETE /api/poems/{id}/like` - Unlike a poem (auth required)
+- `GET /api/users/{id}` - Get user profile with top 10 poems
+- `GET /api/users/{id}/poems` - Get all user poems (paginated)
 
 API documentation available at `http://localhost:5000/swagger` when running in development.
 

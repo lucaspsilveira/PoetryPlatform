@@ -46,3 +46,11 @@ export interface UpdatePoemRequest {
   content?: string;
   isPublished?: boolean;
 }
+
+export interface UserProfile {
+  id: string;
+  displayName: string;
+  createdAt: string;
+  totalPoemCount: number;
+  topPoems: Poem[];
+}

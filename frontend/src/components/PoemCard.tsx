@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { Poem } from '../types';
 import { poemService } from '../services/api';
 import './PoemCard.css';
@@ -59,7 +60,9 @@ export function PoemCard({ poem, showActions, onEdit, onDelete, onLikeChange, is
       )}
       <footer className="poem-footer">
         <div className="poem-meta">
-          <span className="poem-author">{poem.author.displayName}</span>
+          <Link to={`/users/${poem.author.id}`} className="poem-author poem-author-link">
+            {poem.author.displayName}
+          </Link>
           <span className="poem-date">{formattedDate}</span>
         </div>
         <div className="poem-footer-right">

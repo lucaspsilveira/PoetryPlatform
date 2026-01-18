@@ -15,6 +15,8 @@ public interface IPoemService
     Task<bool> DeleteAsync(int id, string userId);
     Task<PoemResponse?> LikeAsync(int poemId, string userId);
     Task<PoemResponse?> UnlikeAsync(int poemId, string userId);
+    Task<UserProfileResponse?> GetUserProfileAsync(string userId, string? currentUserId = null);
+    Task<PoemListResponse> GetPublicUserPoemsAsync(string userId, int page, int pageSize, string? currentUserId = null);
 }
 
 public class PoemService : IPoemService
@@ -171,6 +173,57 @@ public class PoemService : IPoemService
         }
 
         return MapToResponse(poem, userId);
+    }
+
+    public async Task<UserProfileResponse?> GetUserProfileAsync(string userId, string? currentUserId = null)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null) return null;
+
+        var totalPoemCount = await _context.Poems
+            .Where(p => p.UserId == userId && p.IsPublished)
+            .CountAsync();
+
+        var topPoems = await _context.Poems
+            .Include(p => p.User)
+            .Include(p => p.Likes)
+            .Where(p => p.UserId == userId && p.IsPublished)
+            .OrderByDescending(p => p.Likes.Count)
+            .ThenByDescending(p => p.CreatedAt)
+            .Take(10)
+            .ToListAsync();
+
+        return new UserProfileResponse(
+            user.Id,
+            user.DisplayName,
+            user.CreatedAt,
+            totalPoemCount,
+            topPoems.Select(p => MapToResponse(p, currentUserId))
+        );
+    }
+
+    public async Task<PoemListResponse> GetPublicUserPoemsAsync(string userId, int page, int pageSize, string? currentUserId = null)
+    {
+        var query = _context.Poems
+            .Include(p => p.User)
+            .Include(p => p.Likes)
+            .Where(p => p.UserId == userId && p.IsPublished)
+            .OrderByDescending(p => p.CreatedAt);
+
+        var totalCount = await query.CountAsync();
+        var poems = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PoemListResponse(
+            poems.Select(p => MapToResponse(p, currentUserId)),
+            totalCount,
+            page,
+            pageSize
+        );
     }
 
     private static PoemResponse MapToResponse(Poem poem, string? currentUserId) => new(

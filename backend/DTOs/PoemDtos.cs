@@ -37,3 +37,11 @@ public record PoemListResponse(
     int Page,
     int PageSize
 );
+
+public record UserProfileResponse(
+    string Id,
+    string DisplayName,
+    DateTime CreatedAt,
+    int TotalPoemCount,
+    IEnumerable<PoemResponse> TopPoems
+);
