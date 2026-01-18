@@ -24,6 +24,8 @@ export interface Poem {
   updatedAt: string | null;
   isPublished: boolean;
   author: Author;
+  likeCount: number;
+  isLikedByCurrentUser: boolean;
 }
 
 export interface PoemListResponse {

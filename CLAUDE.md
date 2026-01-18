@@ -76,6 +76,8 @@ Key frontend features:
 - `POST /api/poems` - Create poem (auth required)
 - `PUT /api/poems/{id}` - Update poem (auth required, owner only)
 - `DELETE /api/poems/{id}` - Delete poem (auth required, owner only)
+- `POST /api/poems/{id}/like` - Like a poem (auth required)
+- `DELETE /api/poems/{id}/like` - Unlike a poem (auth required)
 
 API documentation available at `http://localhost:5000/swagger` when running in development.
 

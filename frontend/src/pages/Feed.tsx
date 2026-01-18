@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { poemService } from '../services/api';
 import { PoemCard } from '../components/PoemCard';
+import { useAuth } from '../context/AuthContext';
 import type { Poem } from '../types';
 import './Feed.css';
 
 export function Feed() {
+  const { isAuthenticated } = useAuth();
   const [poems, setPoems] = useState<Poem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -28,6 +30,10 @@ export function Feed() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLikeChange = (updatedPoem: Poem) => {
+    setPoems(poems.map(p => p.id === updatedPoem.id ? updatedPoem : p));
   };
 
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -58,7 +64,12 @@ export function Feed() {
           <>
             <div className="poems-mural">
               {poems.map((poem) => (
-                <PoemCard key={poem.id} poem={poem} />
+                <PoemCard
+                  key={poem.id}
+                  poem={poem}
+                  isAuthenticated={isAuthenticated}
+                  onLikeChange={handleLikeChange}
+                />
               ))}
             </div>
 

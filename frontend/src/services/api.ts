@@ -82,6 +82,16 @@ export const poemService = {
   async delete(id: number): Promise<void> {
     await api.delete(`/poems/${id}`);
   },
+
+  async like(id: number): Promise<Poem> {
+    const response = await api.post<Poem>(`/poems/${id}/like`);
+    return response.data;
+  },
+
+  async unlike(id: number): Promise<Poem> {
+    const response = await api.delete<Poem>(`/poems/${id}/like`);
+    return response.data;
+  },
 };
 
 export default api;
