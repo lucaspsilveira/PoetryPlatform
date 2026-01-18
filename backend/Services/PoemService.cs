@@ -147,9 +147,8 @@ public class PoemService : IPoemService
                 PoemId = poemId,
                 CreatedAt = DateTime.UtcNow
             };
-            _context.Likes.Add(like);
-            await _context.SaveChangesAsync();
             poem.Likes.Add(like);
+            await _context.SaveChangesAsync();
         }
 
         return MapToResponse(poem, userId);
@@ -167,9 +166,8 @@ public class PoemService : IPoemService
         var existingLike = poem.Likes.FirstOrDefault(l => l.UserId == userId);
         if (existingLike != null)
         {
-            _context.Likes.Remove(existingLike);
-            await _context.SaveChangesAsync();
             poem.Likes.Remove(existingLike);
+            await _context.SaveChangesAsync();
         }
 
         return MapToResponse(poem, userId);
